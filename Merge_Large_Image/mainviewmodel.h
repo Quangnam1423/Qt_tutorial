@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QDebug>
 
+class FolderManager;
+
 class MainViewModel : public QObject
 {
     Q_OBJECT
@@ -22,9 +24,14 @@ signals:
     void statusTextChanged();
     void dashboardTitleChanged();
 
+private slots:
+    void onManagerFinished();
+    void onManagerCanceled();
+
 private:
     QString m_statusText;
     QString m_dashboardTitle;
+    FolderManager* m_manager;
 
 private:
     void setStatusText(const QString &text);

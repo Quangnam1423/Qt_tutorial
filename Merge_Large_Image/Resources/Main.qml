@@ -141,19 +141,20 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         Layout.preferredWidth: 1
 
-                        // Đường kẻ ngăn cách (Optional)
+                        // Đường kẻ ngăn cách bên trái
                         Rectangle {
                             width: 1; height: parent.height
                             color: "#3E3E42"
                             anchors.left: parent.left
                         }
 
-                        // Cột chứa các Button điều khiển
+                        // Cột chứa nội dung Control Panel
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 20
                             spacing: 15
 
+                            // 1. Tiêu đề
                             Label {
                                 text: "Control Panel"
                                 color: "white"
@@ -162,36 +163,164 @@ ApplicationWindow {
                                 Layout.alignment: Qt.AlignHCenter
                             }
 
-                            // Ví dụ các nút chức năng
-                            Button {
-                                text: "Load Image 1"
+                            // 2. Khung Settings (Nằm trên cùng)
+                            GroupBox {
+                                title: "Settings Parameter" // Tiêu đề khung
                                 Layout.fillWidth: true
-                                onClicked: console.log("Load 1")
-                            }
 
-                            Button {
-                                text: "Load Image 2"
-                                Layout.fillWidth: true
-                                onClicked: console.log("Load 2")
-                            }
+                                // Bạn có thể đặt chiều cao cố định hoặc để nó tự giãn theo nội dung
+                                // Layout.preferredHeight: 300
 
-                            Button {
-                                text: "Settings"
-                                Layout.fillWidth: true
-                            }
+                                background: Rectangle {
+                                    color: "transparent"
+                                    border.color: "#3E3E42"
+                                    radius: 4
+                                }
 
-                            // Spacer đẩy mọi thứ lên trên
-                            Item { Layout.fillHeight: true }
+                                label: Label {
+                                    x: 10
+                                    y: -10
+                                    width: implicitWidth
+                                    text: parent.title
+                                    font.bold: true
+                                    color: "#007ACC" // Màu chữ tiêu đề khung
+                                    background: Rectangle { color: "#252526" } // Màu nền đè lên đường viền
+                                }
 
-                            // Nút to dưới cùng
-                            Button {
-                                text: "Start Merge"
-                                Layout.fillWidth: false            // 1. Không chiếm hết dòng
-                                Layout.preferredWidth: parent.width * 0.5 // 2. Rộng bằng 50% khung chứa
-                                Layout.alignment: Qt.AlignHCenter  // 3. Căn giữa
-                                Layout.preferredHeight: 50
-                                highlighted: true
-                                onClicked: mainVM.startProcessing()
+                                // Nội dung bên trong khung Settings
+                                // ... (Phần code bên trên giữ nguyên)
+
+                                // Cột chứa nội dung Control Panel
+                                ColumnLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 20
+                                    spacing: 15
+
+                                    // 1. Tiêu đề
+                                    Label {
+                                        text: "Control Panel"
+                                        color: "white"
+                                        font.bold: true
+                                        font.pixelSize: 18
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    // 2. Khung Settings
+                                    GroupBox {
+                                        title: "Settings Parameter"
+                                        Layout.fillWidth: true
+                                        // KHÔNG set Layout.fillHeight ở đây
+
+                                        // Style cho khung viền
+                                        background: Rectangle {
+                                            color: "transparent"
+                                            border.color: "#3E3E42"
+                                            radius: 4
+                                        }
+
+                                        // Style cho tiêu đề (đè lên đường viền)
+                                        label: Label {
+                                            x: 10
+                                            y: -10 // Đẩy lên để nằm giữa đường viền
+                                            width: implicitWidth
+                                            text: parent.title
+                                            font.bold: true
+                                            color: "#007ACC"
+
+                                            // Background trùng màu nền app để che đường viền đi qua chữ
+                                            background: Rectangle {
+                                                color: "#252526"
+                                                anchors.fill: parent
+                                                anchors.margins: -4 // Mở rộng vùng che một chút
+                                            }
+                                        }
+
+                                        // Nội dung bên trong (QUAN TRỌNG: SỬA LẠI PHẦN NÀY)
+                                        ColumnLayout {
+                                            // ĐỪNG DÙNG anchors.fill: parent
+                                            anchors.left: parent.left
+                                            anchors.right: parent.right
+                                            anchors.top: parent.top // Chỉ neo bên trên
+                                            anchors.margins: 10
+                                            spacing: 10
+
+                                            RowLayout {
+                                                Label { text: "Threshold:"; color: "white" }
+                                                TextField { Layout.fillWidth: true; placeholderText: "0-255"; color: "black"; background: Rectangle { color: "white" } }
+                                            }
+                                            RowLayout {
+                                                Label { text: "Opacity:"; color: "white" }
+                                                Slider { Layout.fillWidth: true; from: 0; to: 100; value: 50 }
+                                            }
+                                            CheckBox {
+                                                text: "Enable Advanced Mode"
+                                                checked: true
+                                                contentItem: Text {
+                                                    text: parent.text
+                                                    color: "white"
+                                                    leftPadding: parent.indicator.width + parent.spacing
+                                                    verticalAlignment: Text.AlignVCenter
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // 3. SPACER: Đẩy nút xuống đáy
+                                    Item {
+                                        Layout.fillHeight: true
+                                        Layout.fillWidth: true
+                                    }
+
+                                    // 4. Khu vực 2 nút chức năng
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        Layout.fillHeight: false // QUAN TRỌNG: Không cho phép tự giãn chiều cao
+                                        spacing: 15
+
+                                        // Nút 1
+                                        Button {
+                                            text: "Auto Merge\nAll Slot"
+                                            Layout.fillWidth: true
+                                            Layout.fillHeight: true // Fill theo chiều cao của RowLayout (60px)
+                                            highlighted: true
+
+                                            background: Rectangle {
+                                                color: parent.down ? "#005A9E" : "#007ACC"
+                                                radius: 4
+                                            }
+                                            contentItem: Text {
+                                                text: parent.text
+                                                color: "white"
+                                                font.bold: true
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                            }
+                                            onClicked: mainVM.startProcessing()
+                                        }
+
+                                        // Nút 2
+                                        Button {
+                                            text: "Merge\nOne Slot"
+                                            Layout.fillWidth: true
+                                            Layout.fillHeight: true
+                                            highlighted: true
+
+                                            background: Rectangle {
+                                                color: parent.down ? "#005A9E" : "#007ACC"
+                                                radius: 4
+                                            }
+                                            contentItem: Text {
+                                                text: parent.text
+                                                color: "white"
+                                                font.bold: true
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                            }
+                                            onClicked: mainVM.mergeOneSlot()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

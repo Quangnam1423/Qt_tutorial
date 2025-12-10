@@ -1,11 +1,17 @@
 #include "mainviewmodel.h"
+#include "Common/FolderManager.h"
 #include <QTime>
 #include <QTimer>
 
 MainViewModel::MainViewModel(QObject *parent)
     : QObject{parent}
 {
+    m_manager = new FolderManager(this);
 
+    // Kết nối Manager với ViewModel
+    connect(m_manager, &FolderManager::workFinished, this, &MainViewModel::onManagerFinished);
+    connect(m_manager, &FolderManager::workCanceled, this, &MainViewModel::onManagerCanceled);
+    setStatusText("Ready");
 }
 
 void MainViewModel::openFolder(const QString &path)
